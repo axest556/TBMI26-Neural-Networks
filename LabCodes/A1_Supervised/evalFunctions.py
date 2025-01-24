@@ -14,7 +14,9 @@ def calcAccuracy(LPred, LTrue):
     # --------------------------------------------
     # === Your code here =========================
     # --------------------------------------------
-    acc = None
+    correct = np.sum(LPred == LTrue)
+    total = LPred.shape[0]
+    acc = correct / total
     # ============================================
     return acc
 
@@ -34,7 +36,22 @@ def calcConfusionMatrix(LPred, LTrue):
     # --------------------------------------------
     # === Your code here =========================
     # --------------------------------------------
-    cM = None
+
+    classes = np.unique(LTrue) # All possible labels
+    nClasses = classes.shape[0] # nr of unique classes/labels
+
+    # Initialize the confusion matrix
+    cM = np.zeros((nClasses, nClasses), dtype=int)
+
+    # Populate the confusion matrix
+    for pred, true in zip(LPred, LTrue):
+        # Find the index of the predicted and true labels
+        pred_idx = np.where(classes == pred)[0][0] # Find row index in CM to increment cell
+        true_idx = np.where(classes == true)[0][0] # Find column index
+        
+        # Increment the corresponding cell
+        cM[pred_idx, true_idx] += 1
+        
     # ============================================
 
     return cM
@@ -54,7 +71,15 @@ def calcAccuracyCM(cM):
     # --------------------------------------------
     # === Your code here =========================
     # --------------------------------------------
-    acc = None
-    # ============================================
+    # Nr of cases where the predicted label matches the true label
+    true = np.trace(cM)
+
+    # Sum of all elements (total predictions)
+    all = np.sum(cM)
+
+    # Calculate accuracy
+    acc = true / all
     
+    # ============================================
+
     return acc
